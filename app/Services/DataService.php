@@ -71,7 +71,7 @@ class DataService
                                 $localityId = $locality->id;
                             }
                             $zipCode = ZipCode::where('code', $zipCodeCode)
-                            ->where('locality_id', $locality->id)
+                            ->where('locality_id', $localityId)
                             ->where('municipality_id', $municipality->id)->first();
                             if (!$zipCode){
                                 $zipCode = new ZipCode();
@@ -98,7 +98,13 @@ class DataService
                                 $zoneType->save();
                             }
 
-                            $settlement = Settlement::where('name', $settlementName)->first();
+                            $settlement = Settlement::where('name', $settlementName)
+                            ->where('locality_id', $localityId)
+                            ->where('municipality_id', $municipality->id)
+                            ->where('zip_code_id', $zipCode->id)
+                            ->where('zone_type_id', $zoneType->id)
+                            ->where('settlement_type_id', $settlementType->id)
+                            ->first();
                             if (!$settlement){
                                 $settlement = new Settlement();
                                 $settlement->name = $settlementName;
